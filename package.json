@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "live-server --port=5173 --open=demos --watch=demos --ignore=README.md,package.json,.gitignore,.git,node_modules",
-    "lint": "eslint \"**/*.js\" --ignore-path .gitignore",
-    "lint:watch": "eslint \"**/*.js\" --watch --ignore-path .gitignore",
-    "md": "npx markserv .",
+    "dev": "live-server --port=2997 --open=demos --watch=demos --ignore=**/*.md,package.json,.gitignore,.git,node_modules",
+    "lint": "esw \"**/*.js\" --ignore-path .gitignore",
+    "lint:watch": "esw \"**/*.js\" --watch --ignore-path .gitignore",
+    "md": "npx markserv --port=1337 .",
     "start": "concurrently -k -n code,lint,docs -c blue,red,green \"npm:dev\" \"npm:lint:watch\" \"npm:md\""
   },
   "keywords": [],
@@ -16,7 +16,8 @@
   "description": "",
   "devDependencies": {
     "concurrently": "^9.1.2",
-    "eslint": "^9.25.1",
+    "eslint": "^8.57.1",
+    "eslint-watch": "^8.0.0",
     "live-server": "^1.2.2"
   }
 }
