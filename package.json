@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm:dev\" \"npm:lint:watch\"",
+    "dev": "live-server --port=5173 --open=demos --watch=demos --ignore=README.md,package.json,.gitignore,.git,node_modules",
     "lint": "eslint \"**/*.js\" --ignore-path .gitignore",
     "lint:watch": "eslint \"**/*.js\" --watch --ignore-path .gitignore",
-    "dev": "live-server --port=5173 --open=demos --watch=demos --ignore=README.md,package.json,.gitignore,.git,node_modules"
+    "md": "npx markserv .",
+    "start": "concurrently -k -n code,lint,docs -c blue,red,green \"npm:dev\" \"npm:lint:watch\" \"npm:md\""
   },
   "keywords": [],
   "author": "",
