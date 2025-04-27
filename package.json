@@ -1,0 +1,21 @@
+{
+  "name": "animation-demos",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm:dev\" \"npm:lint:watch\"",
+    "lint": "eslint \"**/*.js\" --ignore-path .gitignore",
+    "lint:watch": "eslint \"**/*.js\" --watch --ignore-path .gitignore",
+    "dev": "live-server --port=5173 --open=demos --watch=demos --ignore=README.md,package.json,.gitignore,.git,node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "eslint": "^9.25.1",
+    "live-server": "^1.2.2"
+  }
+}
