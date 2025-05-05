@@ -242,7 +242,7 @@ vec4 color = vec4(-myCircle + 1.0, 0.0, 0.0, 1.0);
 
 ![red center circle](_screenshots\image-11.png "Red center circle")
 
-## 7.0 - Drawing Rectangles
+## 8.0 - Drawing Rectangles
 
 Reusing the step function, we can create hard boundaries for each side of a quadrilateral.
 
@@ -287,7 +287,7 @@ vec4 color = vec4(myRect, 0.45, 0.75, 1.0);
 
 ---
 
-### **7.1 Understanding `step(edge, x)`**
+### **8.1 Understanding `step(edge, x)`**
 
 GLSL’s `step()` function returns:
 
@@ -300,7 +300,7 @@ $$
 
 ---
 
-### **7.2 Expression Breakdown**
+### **8.2 Expression Breakdown**
 
 Let’s look at:
 
