@@ -253,17 +253,10 @@ vec4 color = vec4(vec3(myRectX), 1.0);
 
 ![vertical stripe](_screenshots\image-12.png "Vertical stripe")
 
-Let's break down exactly **why** that GLSL code:
-
-```glsl
-step(0.25, vUV.x) - step(0.75, vUV.x);
-```
-
-produces a **vertical white bar in the middle**, flanked by **black bars** on the left and right.
-
 Creating the hard boundary for the horizontal sides:
 
 ```glsl
+float size = 0.5;
 float myRectY = step(0.5 - (size/2), vUV.y) - step(0.5 + (size/2), vUV.y);
 vec4 color = vec4(vec3(myRectY), 1.0);
 ```
@@ -288,6 +281,15 @@ vec4 color = vec4(myRect, 0.45, 0.75, 1.0);
 ---
 
 ### **8.1 Understanding `step(edge, x)`**
+
+Let's break down exactly **why** that GLSL code:
+
+```glsl
+step(0.25, vUV.x) - step(0.75, vUV.x);
+```
+
+produces a **vertical white bar in the middle**, flanked by **black bars** on the left and right.
+
 
 GLSL’s `step()` function returns:
 
