@@ -30,7 +30,7 @@ vec4 color = vec4(1.0);
 
 This line creates a 4 channel color using a `vec4`. `vec4(1.0)` is shorthand and equivalent to `vec4(1.0, 1.0, 1.0, 1.0)`.
 
-In pixel shaders, colors are defined as 4 channel float values, with the each value representing the corresponding channel from _rgba_ color space:
+In pixel shaders, colors are defined as 4 channel float values, with each value representing the corresponding channel from an _RGBA_ color space:
 
 ```glsl
 vec4 color = vec4(
@@ -84,18 +84,7 @@ Here’s what they map to and why you see them:
 
 ---
 
-#### **Where `.stpq` comes from:**
-
-* **`s`, `t`, `p`, `q`** were traditionally used in OpenGL for **texture coordinate axes**.
-* So in GLSL, `.stpq` is a semantic alias for `.xyzw`, used **when dealing with texture coordinates** or sampling.
-
-Example:
-
-```glsl
-vec4 texCoord = vec4(0.1, 0.2, 0.0, 1.0);
-float u = texCoord.s; // same as texCoord.x
-float v = texCoord.t; // same as texCoord.y
-```
+In GLSL, `.stpq` is a semantic alias for `.xyzw`, used **when dealing with texture coordinates** or sampling.
 
 This allows more expressive, readable code depending on what the vector represents:
 
@@ -155,7 +144,7 @@ This should result in a vertical, black-to-red gradient since we are mapping our
 vec4 color = vec4(vUV.x, vUV.y, 0.0, 1.0);
 ```
 
-This should result in a rastafarian, green-red-yellow gradient, mapping our `x` coordinate values to our red channel, and `y` to our green channel, with both channels mixing in the top right corner to make yellow.
+This should result in a green-red-yellow gradient, mapping our `x` coordinate values to our red channel, and `y` to our green channel, with both channels mixing in the top right corner to make yellow and both channels empty in the bottom left corner to make black.
 
 ![rasta gradient](_screenshots\image-03.png "Rasta Gradient")
 
@@ -190,7 +179,7 @@ vec4 color = vec4(myCircle, 0.0, 0.0, 1.0);
 
 ### **What `length(vUV.xy)` Does**
 
-This computes the **Euclidean distance** from the origin `(0.0, 0.0)` to the current UV coordinate — and that's exactly where the **Pythagorean Theorem** comes in.
+This computes the distance from the origin `(0.0, 0.0)` to the current UV coordinate using the **Pythagorean Theorem**.
 
 If you think of `vUV.xy` as a 2D point `(x, y)`, the `length()` function does:
 
@@ -198,7 +187,7 @@ $$
 \text{length}(vUV.xy) = \sqrt{x^2 + y^2}
 $$
 
-That’s literally the **distance from (0,0)** to `(x, y)` — the hypotenuse of a right triangle where the legs are `x` and `y`.
+This is the **distance from (0,0) to `(x, y)`** — the hypotenuse of a right triangle where the legs are `x` and `y`.
 
 ---
 
@@ -227,7 +216,7 @@ vec4 color = vec4(length(vUV.xy), 0.0, 0.0, 1.0);
 
 creates a radial red gradient that:
 
-* **originates** from the **bottom-left corner (0,0)**, not bottom-right
+* **originates** from the **bottom-left corner (0,0)**
 * **increases** in intensity as the distance from (0,0) increases
 * fades from black to red following a **circular (radial)** pattern
 
@@ -240,7 +229,7 @@ float myCircle = step(0.2, length(vUV.xy - 0.5));
 vec4 color = vec4(myCircle, 0.0, 0.0, 1.0);
 ```
 
-Moving the circle is simply a matter of minusing the `x` and `y` coordinate of the target location from our normalized `x` and `y` pixel coordinates. In the above case, the center of the window is `(0.5, 0.5)`, so we can use the shorthand `vUV.xy - 0.5` to minus `0.5` from the current `x` and `y` values to move them to the center.
+Moving the circle is simply a matter of minusing the normalized `x` and `y` coordinates of the target location from our normalized `x` and `y` pixel coordinates. In the above case, the center of the window is `(0.5, 0.5)`, so we can use the shorthand `vUV.xy - 0.5` to minus `0.5` from the current `x` and `y` values to move them to the center.
 
 ![black center circle](_screenshots\image-10.png "Black center circle")
 
@@ -252,3 +241,91 @@ vec4 color = vec4(-myCircle + 1.0, 0.0, 0.0, 1.0);
 ```
 
 ![red center circle](_screenshots\image-11.png "Red center circle")
+
+## 7.0 - Drawing Rectangles
+
+Reusing the step function, we can create hard boundaries for each side of a quadrilateral.
+
+```glsl
+float myRectX = step(0.25, vUV.x) - step(0.75, vUV.x);
+vec4 color = vec4(vec3(myRectX), 1.0);
+```
+
+![vertical stripe](_screenshots\image-12.png "Vertical stripe")
+
+Let's break down exactly **why** that GLSL code:
+
+```glsl
+step(0.25, vUV.x) - step(0.75, vUV.x);
+```
+
+produces a **vertical white bar in the middle**, flanked by **black bars** on the left and right.
+
+Creating the hard boundary for the horizontal sides:
+
+```glsl
+float myRectY = step(0.5 - (size/2), vUV.y) - step(0.5 + (size/2), vUV.y);
+vec4 color = vec4(vec3(myRectY), 1.0);
+```
+
+![horizontal stripe](_screenshots\image-13.png "Horizontal stripe")
+
+...and finally combining them together to create a rectangle shape:
+
+```glsl
+vec2 size = vec2(0.65, 0.15);
+vec2 pos = vec2(0.5, 0.5);
+
+float myRectX = step(pos.x - (size.x/2), vUV.x) - step(pos.x + (size.x/2), vUV.x);
+float myRectY = step(pos.y - (size.y/2), vUV.y) - step(pos.y + (size.y/2), vUV.y);
+float myRect = myRectX * myRectY;
+
+vec4 color = vec4(myRect, 0.45, 0.75, 1.0);
+```
+
+![pink rectangle](_screenshots\image-14.png "pink rectangle")
+
+---
+
+### **7.1 Understanding `step(edge, x)`**
+
+GLSL’s `step()` function returns:
+
+$$
+\text{step}(e, x) = \begin{cases}
+0.0 & \text{if } x < e \\
+1.0 & \text{if } x \ge e
+\end{cases}
+$$
+
+---
+
+### **7.2 Expression Breakdown**
+
+Let’s look at:
+
+```glsl
+float myRectX = step(0.25, vUV.x) - step(0.75, vUV.x);
+```
+
+This creates a **binary on/off mask** (1.0 or 0.0) **within a specific range** of the specified coordinate in UV space.
+
+#### Case A: `vUV.x < 0.25`
+
+* `step(0.25, vUV.x)` → **0.0**
+* `step(0.75, vUV.x)` → **0.0**
+* Result: `0.0 - 0.0 = 0.0`
+
+#### Case B: `0.25 ≤ vUV.x < 0.75`
+
+* `step(0.25, vUV.x)` → **1.0**
+* `step(0.75, vUV.x)` → **0.0**
+* Result: `1.0 - 0.0 = 1.0`
+
+#### Case C: `vUV.x ≥ 0.75`
+
+* `step(0.25, vUV.x)` → **1.0**
+* `step(0.75, vUV.x)` → **1.0**
+* Result: `1.0 - 1.0 = 0.0`
+
+This math results in a **strip of white** (value = 1.0) between `vUV.x = 0.25` and `vUV.x = 0.75`, and **black** (value = 0.0) outside that range.
