@@ -243,3 +243,12 @@ vec4 color = vec4(myCircle, 0.0, 0.0, 1.0);
 Moving the circle is simply a matter of minusing the `x` and `y` coordinate of the target location from our normalized `x` and `y` pixel coordinates. In the above case, the center of the window is `(0.5, 0.5)`, so we can use the shorthand `vUV.xy - 0.5` to minus `0.5` from the current `x` and `y` values to move them to the center.
 
 ![black center circle](_screenshots\image-10.png "Black center circle")
+
+To invert the values, we can do a simple math trick of multiplying the value by `-1.0` and adding `1.0`, ie. `-1.0 * myCircle + 1.0` or:
+
+```glsl
+float myCircle = step(0.2, length(vUV.xy - 0.5));
+vec4 color = vec4(-myCircle + 1.0, 0.0, 0.0, 1.0);
+```
+
+![red center circle](_screenshots\image-11.png "Red center circle")
