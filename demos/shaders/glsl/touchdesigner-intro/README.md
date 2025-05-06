@@ -331,3 +331,30 @@ This creates a **binary on/off mask** (1.0 or 0.0) **within a specific range** o
 * Result: `1.0 - 1.0 = 0.0`
 
 This math results in a **strip of white** (value = 1.0) between `vUV.x = 0.25` and `vUV.x = 0.75`, and **black** (value = 0.0) outside that range.
+
+## 9.0 - Functions
+
+Using the previous example, we can make a reusable function, outside of our `main()` function to generate our shapes.
+
+```glsl
+float myRect(vec2 size, vec2 pos){
+	float myRectX = step(pos.x - size.x/2, vUV.x) - step(pos.x + size.x/2, vUV.x);
+	float myRectY = step(pos.y - size.y/2, vUV.y) - step(pos.y + size.y/2, vUV.y);
+	return myRectX * myRectY;
+}
+```
+
+This allows us to create our shape in the `main()` function by simply passing in arguments.
+
+```glsl
+void main()
+{
+	vec2 size = vec2(0.1, 0.4);
+	vec2 pos = vec2(0.5, 0.5);
+	vec4 color = vec4(myRect(size, pos), 0.6, 0.75, 1.0);
+
+	fragColor = TDOutputSwizzle(color);
+}
+```
+
+![pink rectangle](_screenshots/image-15.png "pink rectangle")
