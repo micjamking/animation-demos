@@ -9,11 +9,16 @@
     <script type="module">
         import { ShaderApp } from '../../_shared/shader.js';
 
-        const pRes = await fetch('./pixel_shader.glsl');
+        const pRes = await fetch('./poly.glsl');
         const FRAG_SRC = await pRes.text();
         
-        const vRes = await fetch('./vertex_shader.glsl');
-        const VERT_SRC = await vRes.text();
+        const VERT_SRC = /* glsl */`
+            attribute vec2 position;
+
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
         
         new ShaderApp(document.querySelector('canvas'), {
           vertex: VERT_SRC,
