@@ -43,7 +43,7 @@ vec4 color = vec4(
 
 Each color channel ranges from 0.0-1.0, comparable to the 0-255 range in CSS/JS. The above `vec4(1.0)` is equivalent to `rgba(255,255,255,1.0)` and should display a white screen.
 
-![white screen](_screenshots\image-06.png "White screen")
+![white screen](_screenshots/image-06.png "White screen")
 
 ```glsl
 vec4 color = vec4(1.0, 0.0, 0.5, 1.0);
@@ -51,7 +51,7 @@ vec4 color = vec4(1.0, 0.0, 0.5, 1.0);
 
 The above should result in a pink color, mixing 100% of the red channel and 50% of the blue channel:
 
-![pink screen](_screenshots\image-07.png "Pink screen")
+![pink screen](_screenshots/image-07.png "Pink screen")
 
 
 ```glsl
@@ -64,7 +64,7 @@ color.y = 0.8;
 
 The above should result in a baby blue color, mixing 20% of the red channel and 80% of the green channel, and 100% of the blue channel:
 
-![baby blue screen](_screenshots\image-08.png "Baby blue screen")
+![baby blue screen](_screenshots/image-08.png "Baby blue screen")
 
 
 ### 5.1 - Swizzlin'
@@ -130,7 +130,7 @@ vec4 color = vec4(vUV.x, 0.0, 0.0, 1.0);
 
 This should result in a horizontal, black-to-red gradient since we are mapping our `x` coordinate values to our red channel.
 
-![black to red gradient - horizontal](_screenshots\image-01.png "Black to Red Gradient - Horizontal")
+![black to red gradient - horizontal](_screenshots/image-01.png "Black to Red Gradient - Horizontal")
 
 ```glsl
 vec4 color = vec4(vUV.y, 0.0, 0.0, 1.0);
@@ -138,7 +138,7 @@ vec4 color = vec4(vUV.y, 0.0, 0.0, 1.0);
 
 This should result in a vertical, black-to-red gradient since we are mapping our `y` coordinate values to our red channel.
 
-![black to red gradient - vertical](_screenshots\image-02.png "Black to Red Gradient - Vertical")
+![black to red gradient - vertical](_screenshots/image-02.png "Black to Red Gradient - Vertical")
 
 ```glsl
 vec4 color = vec4(vUV.x, vUV.y, 0.0, 1.0);
@@ -146,7 +146,7 @@ vec4 color = vec4(vUV.x, vUV.y, 0.0, 1.0);
 
 This should result in a green-red-yellow gradient, mapping our `x` coordinate values to our red channel, and `y` to our green channel, with both channels mixing in the top right corner to make yellow and both channels empty in the bottom left corner to make black.
 
-![rasta gradient](_screenshots\image-03.png "Rasta Gradient")
+![rasta gradient](_screenshots/image-03.png "Rasta Gradient")
 
 **Colors with Step Function**
 
@@ -156,7 +156,7 @@ vec4 color = vec4(step(0.5, vUV.x), 0.0, 0.0, 1.0);
 
 The step function allows us to create shape by providing a threshold and mapping value. The above outputs a constant `0.0` value if the input value is less than the `0.5` threshold, or a constant `1.0` if the input value is equal to or greater than the threshold.
 
-![black red split](_screenshots\image-04.png "Black Red Split")
+![black red split](_screenshots/image-04.png "Black Red Split")
 
 ```glsl
 vec4 color = vec4(step(0.75, vUV.x), step(0.5, vUV.y), 0.0, 1.0);
@@ -164,7 +164,7 @@ vec4 color = vec4(step(0.75, vUV.x), step(0.5, vUV.y), 0.0, 1.0);
 
 We can combine multiple step functions to draw basic shapes with code.
 
-![rasta flag](_screenshots\image-05.png "Rasta Flag")
+![rasta flag](_screenshots/image-05.png "Rasta Flag")
 
 ## 7.0 - Drawing Circles
 
@@ -175,7 +175,7 @@ float myCircle = step(0.2, length(vUV.xy));
 vec4 color = vec4(myCircle, 0.0, 0.0, 1.0);
 ```
 
-![black corner circle](_screenshots\image-09.png "Black corner circle")
+![black corner circle](_screenshots/image-09.png "Black corner circle")
 
 ### **What `length(vUV.xy)` Does**
 
@@ -231,7 +231,7 @@ vec4 color = vec4(myCircle, 0.0, 0.0, 1.0);
 
 Moving the circle is simply a matter of minusing the normalized `x` and `y` coordinates of the target location from our normalized `x` and `y` pixel coordinates. In the above case, the center of the window is `(0.5, 0.5)`, so we can use the shorthand `vUV.xy - 0.5` to minus `0.5` from the current `x` and `y` values to move them to the center.
 
-![black center circle](_screenshots\image-10.png "Black center circle")
+![black center circle](_screenshots/image-10.png "Black center circle")
 
 To invert the values, we can do a simple math trick of multiplying the value by `-1.0` and adding `1.0`, ie. `-1.0 * myCircle + 1.0` or:
 
@@ -240,7 +240,7 @@ float myCircle = step(0.2, length(vUV.xy - 0.5));
 vec4 color = vec4(-myCircle + 1.0, 0.0, 0.0, 1.0);
 ```
 
-![red center circle](_screenshots\image-11.png "Red center circle")
+![red center circle](_screenshots/image-11.png "Red center circle")
 
 ## 8.0 - Drawing Rectangles
 
@@ -251,7 +251,7 @@ float myRectX = step(0.25, vUV.x) - step(0.75, vUV.x);
 vec4 color = vec4(vec3(myRectX), 1.0);
 ```
 
-![vertical stripe](_screenshots\image-12.png "Vertical stripe")
+![vertical stripe](_screenshots/image-12.png "Vertical stripe")
 
 Creating the hard boundary for the horizontal sides:
 
@@ -261,7 +261,7 @@ float myRectY = step(0.5 - (size/2), vUV.y) - step(0.5 + (size/2), vUV.y);
 vec4 color = vec4(vec3(myRectY), 1.0);
 ```
 
-![horizontal stripe](_screenshots\image-13.png "Horizontal stripe")
+![horizontal stripe](_screenshots/image-13.png "Horizontal stripe")
 
 ...and finally combining them together to create a rectangle shape:
 
@@ -276,7 +276,7 @@ float myRect = myRectX * myRectY;
 vec4 color = vec4(myRect, 0.45, 0.75, 1.0);
 ```
 
-![pink rectangle](_screenshots\image-14.png "pink rectangle")
+![pink rectangle](_screenshots/image-14.png "pink rectangle")
 
 ---
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Shaders - GLSL - Shapes</title>
+    <link rel="stylesheet" href="../../_shared/style.css" />
+</head>
+<body>
+    <canvas class="canvas" width="400" height="400">Canvas not supported</canvas>
+    <script type="module">
+        import { ShaderApp } from '../../_shared/shader.js';
+
+        const pRes = await fetch('./pixel_shader.glsl');
+        const FRAG_SRC = await pRes.text();
+        
+        const vRes = await fetch('./vertex_shader.glsl');
+        const VERT_SRC = await vRes.text();
+        
+        new ShaderApp(document.querySelector('canvas'), {
+          vertex: VERT_SRC,
+          fragment: FRAG_SRC
+        });
+    </script>
+</body>
+</html>

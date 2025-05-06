@@ -1,4 +1,4 @@
-import { ShaderApp } from '../shared/main.js';
+import { ShaderApp } from '../../_shared/shader.js';
 
 /* =========================================================================
    Shader sources (inline template strings for portability)
