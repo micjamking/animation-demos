@@ -4,6 +4,13 @@
 
 <!-- > You can think of \[shaders\] as the equivalent of Gutenberg's press for graphics -->
 
+<!-- CodePen Embed example -->
+<!-- <iframe height="760" style="width: 100%;" scrolling="no" title="Flexbox: Fill Vertical Space (100% Height) " src="https://codepen.io/micjamking/embed/preview/QdojLz?default-tab=result&theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/micjamking/pen/QdojLz">
+  Flexbox: Fill Vertical Space (100% Height) </a> by Mike King (<a href="https://codepen.io/micjamking">@micjamking</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe> -->
+
 ## 5.0 - Colors
 
 The default pixel shader from a `GLSL TOP`:
@@ -233,11 +240,11 @@ Moving the circle is simply a matter of minusing the normalized `x` and `y` coor
 
 ![black center circle](_screenshots/image-10.png "Black center circle")
 
-To invert the values, we can do a simple math trick of multiplying the value by `-1.0` and adding `1.0`, ie. `-1.0 * myCircle + 1.0` or:
+To invert the values, we can simply minus the value from `1.0`, ie. `1.0 - myCircle` or:
 
 ```glsl
 float myCircle = step(0.2, length(vUV.xy - 0.5));
-vec4 color = vec4(-myCircle + 1.0, 0.0, 0.0, 1.0);
+vec4 color = vec4(1.0 - myCircle, 0.0, 0.0, 1.0);
 ```
 
 ![red center circle](_screenshots/image-11.png "Red center circle")
@@ -459,3 +466,239 @@ This gives you a smooth, continuous way to animate or position objects in a circ
 | `atan(y, x)`           | Angular distortions, polar unwraps  |
 | `mod`, `fract`         | Repeating patterns and grids        |
 | `length(vec2)`         | Radial gradients, distance masks    |
+
+## 11.0 - Drawing Polygons
+
+First thing we need is a variable to store the number of sides
+
+```glsl
+float nSides = 5.0;
+```
+
+Using this, we can calculate the angle for every vertex of our shape:
+
+```glsl
+float angles = PI * 2.0 / nSides;
+```
+
+Next, we'll need to get theta, the angle that any point creates with the positive x-axis. This is where arctangent comes in:
+
+```glsl
+float theta = atan(vUV.y, vUV.x);
+```
+
+Finally, we calculate the distance of every point from a vertex:
+
+```glsl
+float dist = cos(round(theta/angles) * angles - theta) * length(vUV.xy);
+```
+
+Putting it all together:
+
+```glsl
+#define PI 3.1415926535
+float nSides = 5.0;
+out vec4 fragColor;
+void main(){
+  float theta = atan(vUV.y, vUV.x);
+  float angles = PI * 2.0 / nSides;
+  float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
+  vec4 color = vec4(vec3(dist), 1.0);
+  fragColor = TDOutputSwizzle(color);
+}
+```
+
+![Polygon gradient](_screenshots/image-16.png "Polygon gradient")
+
+This is a really powerful shader technique that leverages trigonometry and the nature of the unit circle to generate polygons. Let's break it down step-by-step to fully understand how and why it works.
+
+**Understanding the Code:**
+
+```glsl
+float nSides = 5.0;
+...
+float theta = atan(vUV.y, vUV.x);
+float angles = PI * 2.0 / nSides;
+float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
+```
+
+---
+
+### **11.1 Theta: The Angular Component**
+
+`theta = atan(vUV.y, vUV.x);`
+
+* `atan()` (or `atan2()` in GLSL) calculates the **angle (in radians)** between the positive x-axis and the point `(x, y)` defined by `vUV.xy`.
+* This angle is expressed in radians, ranging from `-π` to `π`.
+
+**Why use `atan()`?**
+
+* It allows us to take any `(x, y)` coordinate and map it to an angle on the unit circle.
+* This is crucial for dividing the circle into angular segments (like slicing a pizza).
+
+---
+
+### **11.2 Dividing the Circle into Angular Segments:**
+
+```glsl
+float angles = PI * 2.0 / nSides;
+```
+
+* This calculates the **angle size** of each segment (or slice) that the polygon will have.
+* Since a full circle is `2π` radians, we divide by `nSides` to get the angle width of each segment.
+
+For example, for a pentagon (`nSides = 5`):
+
+$$
+\text{angles} = \frac{2\pi}{5} \approx 1.256 \text{ radians}
+$$
+
+This tells us that each "spoke" or "slice" of the pentagon is `1.256` radians wide.
+
+---
+
+### **11.3 Rounding and Snapping the Angle:**
+
+```glsl
+round(theta / angles) * angles
+```
+
+* `theta / angles` calculates **how many segments the angle `theta` has traversed**, essentially snapping `theta` to the nearest segment center.
+* `round()` rounds this to the **nearest segment center**, effectively "locking" the angle to the closest polygon vertex.
+
+#### **Purpose:**
+
+This piece of code **snaps the current angle `theta` to the nearest vertex angle** of the polygon.
+
+**Why do we need this?**
+We need to determine **how far the current angle is from the nearest vertex**, so we can project the point outward to the polygon's edge.
+
+#### **Breaking It Down:**
+
+* `theta` — This is the **current angle in radians** for the point `(vUV.x, vUV.y)`, calculated using `atan(vUV.y, vUV.x)`.
+* `angles` — This is the **angular width** of each polygon segment (e.g., `2π / 5` for a pentagon).
+
+Now, let's look at the components:
+
+**a. `theta / angles`**
+
+* This calculates the number of "slices" that the current angle `theta` has traversed.
+* If `angles = 1.256` (for a pentagon) and `theta = 2.5`, then:
+
+$$
+\text{theta / angles} = \frac{2.5}{1.256} \approx 1.99
+$$
+
+This value is essentially how many segments (or vertices) we've passed through.
+
+---
+
+**b. `round(theta / angles)`**
+
+* This **rounds** the fractional slice value to the nearest whole slice.
+* In the above example, `1.99` would **round to 2**, meaning we're snapping to the 2nd vertex.
+
+---
+
+**c. `round(...) * angles`**
+
+* Multiplying by `angles` **converts the segment index back to an angle value in radians**.
+
+$$
+2 \times 1.256 \approx 2.512
+$$
+
+Now, we have the **snapped vertex angle** in radians.
+
+---
+
+**d. `round(...) * angles - theta`**
+
+* This calculates the **angular difference** between the current angle and the snapped vertex angle.
+
+$$
+2.512 - 2.5 = 0.012
+$$
+
+This is the **angular offset** from the current point to the closest vertex.
+
+* If this value is `0`, we're exactly on a vertex.
+* If this value is ±π/2, we're halfway between vertices.
+
+![mathematical transformation from the cosine graph to the geometric structure of the polygon](_screenshots/image-21.png "mathematical transformation from the cosine graph to the geometric structure of the polygon")
+
+---
+
+### **11.4 Calculating the Distance Using Cosine:**
+
+```glsl
+float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
+```
+
+#### **What is this line doing?**
+
+* The expression inside `cos()` calculates the **angular distance** between the current point (`theta`) and the snapped vertex (`round(...) * angles`).
+
+* `cos()` converts this angular distance into a **scaling factor**, where:
+
+  * `cos(0)` is `1.0` (directly on the vertex)
+  * `cos(±π/2)` is `0.0` (halfway between vertices)
+
+* `length(vUV.xy)` calculates the **distance from the origin (0,0) to the point (x, y)**, which is the **radius** or distance from the center of the circle.
+
+#### **Why Cosine?**
+
+* Cosine is used here to **scale the length** based on the angular distance to the vertex.
+* It essentially projects the point onto the "edge" of the polygon, ensuring that points in between vertices are "pulled in" to form flat edges.
+
+---
+
+### **11.5 How Does Cosine Work in This Context?**
+
+* Cosine takes in an **angular difference** (from the nearest vertex to the current point).
+* When that angular difference is `0`, `cos(0)` is `1.0`, so the full length is preserved.
+* When that angular difference is `π/2`, `cos(π/2)` is `0.0`, effectively pulling the point to the **closest vertex**.
+
+---
+
+### **11.6 Summary:**
+
+* `theta` calculates the **angle** of the current point in UV space.
+* `angles` defines the **angular width** of each polygon segment.
+* The `round()` and `cos()` operations work together to **snap the point** to the nearest vertex and scale its distance to form the polygon shape.
+
+This technique is extremely powerful for generating **regular polygons, stars, and other radial patterns** procedurally, using nothing but trigonometric functions and a bit of math.
+
+---
+
+We have a gradient, but not quite the defined shape we are looking for. Again, this is where the `step()` function comes in:
+
+```glsl
+float size = 0.2;
+vec4 color = vec4(vec3(step(size, dist)), 1.0);
+```
+
+![Polygon shape](_screenshots/image-17.png "Polygon shape")
+
+Invert it using `1.0 - step()`
+
+```glsl
+vec4 color = vec4(vec3(1.0 - step(size, dist)), 1.0);
+```
+
+![Inverted Polygon shape](_screenshots/image-18.png "Inverted Polygon shape")
+
+Move the shape
+
+```glsl
+vec2 pos = vec2(0.5, 0.5);
+vec2 myUV = vUV.xy - pos;
+float theta = atan(myUV.y, myUV.x);
+float dist = cos(round(theta / angles) * angles - theta) * length(myUV.xy);
+```
+
+![Centered Polygon shape](_screenshots/image-19.png "Centered Polygon shape")
+
+Continue experimenting...
+
+![Random triangle shape](_screenshots/image-20.png "Random triangle shape")
