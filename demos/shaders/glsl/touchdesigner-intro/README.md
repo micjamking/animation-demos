@@ -702,3 +702,14 @@ float dist = cos(round(theta / angles) * angles - theta) * length(myUV.xy);
 Continue experimenting...
 
 ![Random triangle shape](_screenshots/image-20.png "Random triangle shape")
+
+## 12.0 - Gradients
+
+While the `step()` function helps us split colors based on a given threshold, the `smoothstep()` can be used to interpolate between two values, creating smoother transitions, gradients, and color blends.
+
+```glsl
+float myGradient = smoothstep(0.3, 0.7, vUV.x);
+vec4 color = vec4(vec3(myGradient), 1.0);
+```
+
+![Horizontal black to white gradient](_screenshots/image-23.png "Horizontal black to white gradient")
