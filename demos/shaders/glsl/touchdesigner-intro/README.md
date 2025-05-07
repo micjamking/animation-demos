@@ -358,3 +358,104 @@ void main()
 ```
 
 ![pink rectangle](_screenshots/image-15.png "pink rectangle")
+
+## 10.0 - Shader Math
+
+We'll need to use `PI` in our calculations from time to time, so we need to define a constant that can be referenced in our code:
+
+```glsl
+#define PI 3.1415926535
+```
+
+---
+
+### 10.1 The Unit Circle & Radians
+
+```
+               y-axis (sin θ)
+                   ↑
+                   |
+        (270°)     |     (90°)
+        π*3/2      |     π/2
+          |        •        |
+          |        |        |
+          |        |        |
+<------------------O------------------> x-axis (cos θ)
+          |        |        |
+          |        |        |
+          |        •        |
+        π*5/2      |        π
+       (360°)      |      (180°)
+                   |
+                   ↓
+                  
+                   
+| Angle (°) | Radians      | sin(θ)  | cos(θ)  |
+|-----------|--------------|---------|---------|
+| 0°        | 0            | 0.000   | 1.000   |
+| 30°       | π/6          | 0.500   | 0.866   |
+| 45°       | π/4          | 0.707   | 0.707   |
+| 60°       | π/3          | 0.866   | 0.500   |
+| 90°       | π/2          | 1.000   | 0.000   |
+| 120°      | 2π/3         | 0.866   | -0.500  |
+| 135°      | 3π/4         | 0.707   | -0.707  |
+| 150°      | 5π/6         | 0.500   | -0.866  |
+| 180°      | π            | 0.000   | -1.000  |
+| 210°      | 7π/6         | -0.500  | -0.866  |
+| 225°      | 5π/4         | -0.707  | -0.707  |
+| 240°      | 4π/3         | -0.866  | -0.500  |
+| 270°      | 3π/2         | -1.000  | 0.000   |
+| 300°      | 5π/3         | -0.866  | 0.500   |
+| 315°      | 7π/4         | -0.707  | 0.707   |
+| 330°      | 11π/6        | -0.500  | 0.866   |
+| 360°      | 2π           | 0.000   | 1.000   |
+```
+
+* The **unit circle** is a circle with a radius of `1.0`, centered at the origin `(0, 0)`.
+* An angle `θ` (theta), measured in **radians**, defines a point on the circle:
+
+  * `x = cos(θ)`
+  * `y = sin(θ)`
+* **Radians** are just another way of measuring angles:
+
+  * `0° = 0 rad`
+  * `180° = π rad`
+  * `360° = 2π rad`
+
+This gives you a smooth, continuous way to animate or position objects in a circular pattern — no need to worry about degrees when using GLSL or GLSL-style math.
+
+---
+
+### 10.2 Sine and Cosine
+
+* `cos(t)` gives you smooth values between `1 → -1 → 1`, starting at **max**
+* `sin(t)` gives you the same but **phase shifted** (starts at zero)
+* Together, these are perfect for:
+
+  * Circular motion (`vec2(cos(t), sin(t))`)
+  * Oscillations (e.g. pulsing lights or waves)
+  * Pattern generation in polar coordinates
+  * Building polar gradients and SDFs
+
+---
+
+### 10.3 Tangent & Arctangent
+
+* **`tan(θ)` = sin(θ) / cos(θ)** — less commonly used directly, but it appears in slope, gradient, and spiral calculations
+* **`atan(y, x)`** — a **super useful** GLSL function that returns the angle from the origin to point `(x, y)`
+
+  * This is used for converting `vec2` coords into angular values
+  * Useful in polar coordinate warps, spiral effects, and angular masking
+
+---
+
+### 10.4 Use Cases
+
+| Function               | Creative Use Case                   |
+| ---------------------- | ----------------------------------- |
+| `sin(t)`               | Looping waves, modulated brightness |
+| `cos(t)`               | Smooth loops, offsets from sin      |
+| `vec2(cos(t), sin(t))` | Circle/ellipse movement or drawing  |
+| `atan(y, x)`           | Angular distortions, polar unwraps  |
+| `mod`, `fract`         | Repeating patterns and grids        |
+| `length(vec2)`         | Radial gradients, distance masks    |
