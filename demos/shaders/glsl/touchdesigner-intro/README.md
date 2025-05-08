@@ -1,4 +1,5 @@
-# TouchDesigner Intro to GLSL - Dev Notes
+# TouchDesigner: Introduction to GLSL
+**Study Guide & Developer Notes**
 
 <!-- [https://thebookofshaders.com/00/](https://thebookofshaders.com/00/) -->
 
@@ -835,3 +836,37 @@ vec3 colorMix = mix(color1, color2, myCircle);
 ```
 
 ![Pink circle blue background](_screenshots/image-29.png "Pink circle blue background")
+
+## 13.0 - Translate
+
+We can combine multiple techniques, creating multiple objects using our different `smoothstep` functions.
+
+```glsl
+float myCircle1 = myCircleShape(vUV.xy, 0.20, vec2(0.3, 0.5), 0.005);
+float myCircle2 = myCircleShape(vUV.xy, 0.10, vec2(0.1, 0.1), 0.005);
+float myCircle3 = myCircleShape(vUV.xy, 0.05, vec2(0.7, 0.8), 0.005);
+float myCircle4 = myCircleShape(vUV.xy, 0.15, vec2(0.7, 0.3), 0.005);
+float circles = myCircle1 + myCircle2 + myCircle3 + myCircle4;
+
+vec4 color = vec4(
+  circles,
+  0.8,
+  0.2,
+  1.0
+);
+```
+
+![Yellow circles green background](_screenshots/image-30.png "Yellow circles green background")
+
+We can also move around the canvas using an offset similar to the `pos` variable we used earlier to center things.
+
+```glsl
+vec2 offset = vec2(-0.25, -0.15);
+vec2 myUV = vUV.xy + offset;
+float myCircle1 = myCircleShape(myUV.xy, 0.20, vec2(0.3, 0.5), 0.005);
+float myCircle2 = myCircleShape(myUV.xy, 0.10, vec2(0.1, 0.1), 0.005);
+float myCircle3 = myCircleShape(myUV.xy, 0.05, vec2(0.7, 0.8), 0.005);
+float myCircle4 = myCircleShape(myUV.xy, 0.15, vec2(0.7, 0.3), 0.005);
+```
+
+![Yellow circles green background](_screenshots/image-31.png "Yellow circles green background")
