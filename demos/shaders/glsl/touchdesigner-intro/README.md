@@ -67,7 +67,7 @@ color.r = 0.2;
 color.y = 0.8;
 ```
 
-(See [0.5.1 Swizzling](#051---swizzling) below)
+(See [0.5.1 - Swizzlin'](#051---swizzling) below)
 
 The above should result in a baby blue color, mixing 20% of the red channel and 80% of the green channel, and 100% of the blue channel:
 
@@ -83,7 +83,7 @@ Here’s what they map to and why you see them:
 
 #### **Swizzle Mask Equivalents:**
 
-| Meaning     | 2D Vectors    | 3D Vectors | 4D Vectors                                |
+| Meaning     | 2D Vectors    | 3D Vectors | Context                                |
 | ----------- | ------------- | ---------- | ----------------------------------------- |
 | Coordinates | `.xy`, `.xyz` | `.xyzw`    | Used in position, direction, general math |
 | Colors      | `.rg`, `.rgb` | `.rgba`    | Used in color operations                  |
@@ -103,7 +103,7 @@ This allows more expressive, readable code depending on what the vector represen
 
 **The Coordinate System**
 
-When working in  GLSL, we want the same code to run with all kinds of image resolution... To achieve this, we can normalize our image space, ie scaling the horizontal and vertical coordinates to be contained in a 0.0 - 1.0 range.
+When working in  GLSL, we want the same code to run with all kinds of image resolutions... To achieve this, we can normalize our image space, ie. scaling the horizontal and vertical coordinates to be contained in a `0.0 - 1.0` range.
 
 _Normalized clip-space:_
 ```
@@ -705,7 +705,7 @@ Continue experimenting...
 
 ## 12.0 - Gradients
 
-While the `step()` function helps us split colors based on a given threshold, the `smoothstep()` can be used to interpolate between two values, creating smoother transitions, gradients, and color blends.
+While the `step()` function helps us split colors based on a given threshold, the `smoothstep()` function can be used to interpolate between two values, creating smoother transitions, gradients, and color blends.
 
 ```glsl
 float myGradient = smoothstep(0.3, 0.7, vUV.x);
@@ -713,3 +713,125 @@ vec4 color = vec4(vec3(myGradient), 1.0);
 ```
 
 ![Horizontal black to white gradient](_screenshots/image-23.png "Horizontal black to white gradient")
+
+`smoothstep()` takes in 3 arguments: the value of the lower range (ie. transition start), the value of the upper range (ie. transition end) and the source value for interpolation.
+
+We can also combine multiple `smoothstep()` functions to create patterns:
+
+```glsl
+float myGradientX = smoothstep(0.2, 0.5, vUV.x) - smoothstep(0.5, 0.8, vUV.x);
+float myGradientY = smoothstep(0.2, 0.5, vUV.y);
+vec4 color = vec4(myGradientX, myGradientY, 1.0, 1.0);
+```
+
+![Red blue purple pattern](_screenshots/image-24.png "Red blue purple pattern")
+
+Recreating our circle using `smoothstep()`
+
+```glsl
+float myCircleShape(vec2 uv, float size, float smoothness, vec2 pos){
+  return smoothstep(size, size + smoothness, length(uv - pos));
+}
+...
+vec4 color = vec4(
+  1.0 - myCircleShape(
+    vUV.xy,
+    0.15,
+    0.0075,
+    vec2(0.5, 0.5)
+  ),
+  0.2,
+  0.8,
+  1.0
+);
+```
+
+![Pink circle blue background](_screenshots/image-25.png "Pink circle blue background")
+
+Recreating our rectangle using `smoothstep()`
+
+```glsl
+float myRectShape(vec2 uv, vec2 size, vec2 pos, float smoothness){
+  float rectLeft = pos.x - size.x;
+  float rectRight = pos.x + size.x;
+  float rectTop = pos.y + size.y;
+  float rectBot = pos.y - size.y;
+	
+  float myRectX =
+    smoothstep(rectLeft - smoothness, rectLeft, uv.x)
+    - smoothstep(rectRight, rectRight + smoothness, uv.x);
+	
+  float myRectY =
+    smoothstep(rectBot - smoothness, rectBot, uv.y)
+    - smoothstep(rectTop, rectTop + smoothness, uv.y);
+	
+  return myRectX * myRectY;
+}
+...
+vec4 color = vec4(
+  1.0 - myRectShape(
+    vUV.xy,
+    vec2(0.35, 0.05),
+    vec2(0.5, 0.5),
+    0.005
+  ),
+  0.2,
+  0.8,
+  1.0
+);
+```
+
+![Blue rectangle pink background](_screenshots/image-26.png "Blue rectangle pink background")
+
+And finally recreating our polygon using `smoothstep()`
+
+```glsl
+float myPolygonShape(vec2 uv, float nSides, float size, vec2 pos, float smoothness){
+  vec2 myUV = uv - pos;
+  float angles = 2.0 * PI / nSides;
+  float theta = atan(myUV.y, myUV.x);
+  float dist = cos(round(theta / angles) * angles - theta) * length(myUV.xy);
+  return smoothstep(size, size + smoothness, dist);
+}
+...
+vec4 color = vec4(
+  myPolygonShape(
+    vUV.xy,
+    6.0,
+    0.15,
+    vec2(0.5, 0.5),
+    0.0075
+  ),
+  0.8,
+  0.2,
+  1.0
+);
+```
+
+![Green hexagon yellow background](_screenshots/image-27.png "Green hexagon yellow background")
+
+We can also blend colors using the `mix()` function:
+
+```glsl
+vec3 color1 = vec3(0.2, 0.8, 1.0);
+vec3 color2 = vec3(1.0, 0.2, 0.8);
+vec3 colorMix = mix(color1, color2, vUV.y);
+vec4 color = vec4(colorMix, 1.0);
+```
+
+![Blue pink gradient](_screenshots/image-28.png "Blue pink gradient")
+
+We can also combine the techniques, using `mix()` and `smoothstep()` together:
+
+```glsl
+	float myCircle = 1.0 - myCircleShape(
+		vUV.xy,
+		0.15,
+		0.0075,
+		vec2(0.5, 0.5)
+	);
+	...
+	vec3 colorMix = mix(color1, color2, myCircle);
+```
+
+![Pink circle blue background](_screenshots/image-29.png "Pink circle blue background")
