@@ -824,14 +824,14 @@ vec4 color = vec4(colorMix, 1.0);
 We can also combine the techniques, using `mix()` and `smoothstep()` together:
 
 ```glsl
-	float myCircle = 1.0 - myCircleShape(
-		vUV.xy,
-		0.15,
-		0.0075,
-		vec2(0.5, 0.5)
-	);
-	...
-	vec3 colorMix = mix(color1, color2, myCircle);
+float myCircle = 1.0 - myCircleShape(
+  vUV.xy,
+  0.15,
+  0.0075,
+  vec2(0.5, 0.5)
+);
+...
+vec3 colorMix = mix(color1, color2, myCircle);
 ```
 
 ![Pink circle blue background](_screenshots/image-29.png "Pink circle blue background")
