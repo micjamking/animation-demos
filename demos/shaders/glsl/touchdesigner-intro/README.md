@@ -870,3 +870,6 @@ float myCircle4 = myCircleShape(myUV.xy, 0.15, vec2(0.7, 0.3), 0.005);
 ```
 
 ![Yellow circles green background](_screenshots/image-31.png "Yellow circles green background")
+
+## 14.0 - Rotation
+
