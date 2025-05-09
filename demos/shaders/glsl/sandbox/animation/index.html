@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Shaders - GLSL - Animations</title>
+    <link rel="stylesheet" href="../../_shared/style.css" />
+</head>
+<body>
+    <canvas class="canvas" width="400" height="400">Canvas not supported</canvas>
+    <script type="module">
+        import { ShaderApp } from '../../_shared/shader.js';
+
+        const res = await fetch('./rotation.glsl');
+        const FRAG_SRC = await res.text();
+        
+        const VERT_SRC = /* glsl */`
+            attribute vec2 position;
+
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+        
+        new ShaderApp(document.querySelector('canvas'), {
+          vertex: VERT_SRC,
+          fragment: FRAG_SRC
+        });
+    </script>
+</body>
+</html>

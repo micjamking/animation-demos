@@ -63,7 +63,7 @@ export class ShaderApp {
    * @param {{ vertex:string, fragment:string }} src
    */
   constructor(canvas, src) {
-    console.log('Running ShaderApp...');
+    console.log('Running WebGL canvas shader...');
     this.gl = canvas.getContext('webgl');
     if (!this.gl) throw new Error('WebGL not supported');
 

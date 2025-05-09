@@ -17,6 +17,8 @@ const FRAG_SRC = /* glsl */`
   uniform vec2 u_mouse;
   uniform vec2 u_resolution;
   uniform float u_time;
+
+  #define PI 3.1415926535
   
   void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;
