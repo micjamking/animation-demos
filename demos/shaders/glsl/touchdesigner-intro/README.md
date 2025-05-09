@@ -513,11 +513,9 @@ void main(){
 
 This is a really powerful shader technique that leverages trigonometry and the nature of the unit circle to generate polygons. Let's break it down step-by-step to fully understand how and why it works.
 
-**Understanding the Code:**
+### Understanding the Code:
 
 ```glsl
-float nSides = 5.0;
-...
 float theta = atan(vUV.y, vUV.x);
 float angles = PI * 2.0 / nSides;
 float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
@@ -531,6 +529,8 @@ float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
 
 * `atan()` (or `atan2()` in GLSL) calculates the **angle (in radians)** between the positive x-axis and the point `(x, y)` defined by `vUV.xy`.
 * This angle is expressed in radians, ranging from `-π` to `π`.
+
+![Theta: The Angular Component](_screenshots/image-33.png "Theta: The Angular Component")
 
 **Why use `atan()`?**
 
@@ -555,6 +555,8 @@ $$
 $$
 
 This tells us that each "spoke" or "slice" of the pentagon is `1.256` radians wide.
+
+![Dividing the Circle into Angular Segments](_screenshots/image-32.png "Dividing the Circle into Angular Segments")
 
 ---
 
@@ -584,10 +586,10 @@ Now, let's look at the components:
 **a. `theta / angles`**
 
 * This calculates the number of "slices" that the current angle `theta` has traversed.
-* If `angles = 1.256` (for a pentagon) and `theta = 2.5`, then:
+* If `angles = 1.256` (for a pentagon) and `theta = 0.7854 = atan(0.5, 0.5)`, then:
 
 $$
-\text{theta / angles} = \frac{2.5}{1.256} \approx 1.99
+\text{theta / angles} = \frac{0.7854}{1.256} \approx 0.625
 $$
 
 This value is essentially how many segments (or vertices) we've passed through.
@@ -597,7 +599,7 @@ This value is essentially how many segments (or vertices) we've passed through.
 **b. `round(theta / angles)`**
 
 * This **rounds** the fractional slice value to the nearest whole slice.
-* In the above example, `1.99` would **round to 2**, meaning we're snapping to the 2nd vertex.
+* In the above example, `0.625` would **round to 1**, meaning we're snapping to the 1st vertex.
 
 ---
 
@@ -606,10 +608,12 @@ This value is essentially how many segments (or vertices) we've passed through.
 * Multiplying by `angles` **converts the segment index back to an angle value in radians**.
 
 $$
-2 \times 1.256 \approx 2.512
+1 \times 1.256 \approx 1.256
 $$
 
 Now, we have the **snapped vertex angle** in radians.
+
+![snapped vertex angle](_screenshots/image-34.png "snapped vertex angle")
 
 ---
 
@@ -626,7 +630,7 @@ This is the **angular offset** from the current point to the closest vertex.
 * If this value is `0`, we're exactly on a vertex.
 * If this value is ±π/2, we're halfway between vertices.
 
-![mathematical transformation from the cosine graph to the geometric structure of the polygon](_screenshots/image-21.png "mathematical transformation from the cosine graph to the geometric structure of the polygon")
+![snapped vertex angle](_screenshots/image-35.png "snapped vertex angle")
 
 ---
 
@@ -645,7 +649,13 @@ float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
   * `cos(0)` is `1.0` (directly on the vertex)
   * `cos(±π/2)` is `0.0` (halfway between vertices)
 
+![cosine interpolation of angular offset across 360 degrees](_screenshots/image-37.png "cosine interpolation of angular offset across 360 degrees")
+
+![cosine interpolation of angular offset across 360 degrees](_screenshots/image-36.png "cosine interpolation of angular offset across 360 degrees")
+
 * `length(vUV.xy)` calculates the **distance from the origin (0,0) to the point (x, y)**, which is the **radius** or distance from the center of the circle.
+
+![Distance modulated by cosine of angular offset](_screenshots/image-38.png "Distance modulated by cosine of angular offset")
 
 #### **Why Cosine?**
 
