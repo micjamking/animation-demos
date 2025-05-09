@@ -883,3 +883,54 @@ float myCircle4 = myCircleShape(myUV.xy, 0.15, vec2(0.7, 0.3), 0.005);
 
 ## 14.0 - Rotation
 
+To rotate shapes, we need to use a matrix function called `mat2()`:
+
+```glsl
+mat2 myRotation(float theta){
+  return mat2(cos(theta), -sin(theta), sin(theta), cos(theta));
+}
+```
+
+`mat2()` is a 2x2 dimensional matrix that we can use to construct a 2D rotation.
+
+```glsl
+float theta = atan(vUV.y, vUV.x);
+float angles = PI * 2.0 / nSides;
+float dist = cos(round(theta / angles) * angles - theta) * length(vUV.xy);
+vec4 color = vec4(smoothstep(size, size + 0.0075, dist), 0.8, 0.2, 1.0);
+```
+
+![Rotating pentagon](_screenshots/image-39.png "Rotating pentagon")
+
+```glsl
+vec2 myUV = vUV.xy * myRotate(0.35);
+float theta = atan(myUV.y, myUV.x);
+float angles = PI * 2.0 / nSides;
+float dist = cos(round(theta / angles) * angles - theta) * length(myUV.xy);
+vec4 color = vec4(smoothstep(size, size + 0.0075, dist), 0.8, 0.2, 1.0);
+```
+
+![Rotating pentagon](_screenshots/image-40.png "Rotating pentagon")
+
+But we need to do two things: rotate around the center of the canvas `(0.5, 0.5)` instead of the canvas origin `(0.0, 0.0)` and center the object in the canvas.
+
+```glsl
+vec2 myUV = ((vUV.xy - 0.5) * myRotate(0.35)) + 0.5;
+myUV = myUV - vec2(0.5, 0.5);
+float theta = atan(myUV.y, myUV.x);
+float angles = PI * 2.0 / nSides;
+float dist = cos(round(theta / angles) * angles - theta) * length(myUV.xy);
+vec4 color = vec4(smoothstep(size, size + 0.0075, dist), 0.8, 0.2, 1.0);
+fragColor = TDOutputSwizzle(color);
+```
+
+![Rotating pentagon](_screenshots/image-41.png "Rotating pentagon")
+
+And we can pass in a uniform called `uTime` to represent the passing of time and animate the results.
+
+```glsl
+uniform float uTime;
+...
+vec2 myUV = ((uv.xy - vec2(centerX, 0.5)) * myRotate(sin(uTime)*PI)) + vec2(centerX, 0.5);
+```
+<div style="position:relative; padding-bottom:100%; height:0; overflow:hidden;"><iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" src="https://www.shadertoy.com/embed/wc33RH?gui=true&t=10&paused=false&muted=false" allowfullscreen></iframe></div>
