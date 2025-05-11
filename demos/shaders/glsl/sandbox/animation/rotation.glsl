@@ -19,7 +19,14 @@ mat2 myRotation(float theta){
   return mat2(cos(theta), -sin(theta), sin(theta), cos(theta));
 }
 
-float myPolygonShape(vec2 uv, float nSides, float size, vec2 pos, bool rotate, float rotationDelay){
+float myPolygonShape(
+  vec2 uv,
+  float nSides,
+  float size,
+  vec2 pos,
+  bool rotate,
+  float rotationDelay
+){
   if (rotate == true) {
     uv = ((uv.xy - pos) * myRotation(sin(u_time - rotationDelay) * PI)) + pos;
   }
@@ -30,8 +37,18 @@ float myPolygonShape(vec2 uv, float nSides, float size, vec2 pos, bool rotate, f
   return 1.0 - smoothstep(size, size + 0.005, dist);
 }
 
-float myPolygon(vec2 uv, float nSides, float size, float aspect, vec2 pos, bool rotate, float rotationDelay){
-  return (myPolygonShape(uv, nSides, size, pos, rotate, rotationDelay) * (1.0 - myPolygonShape(uv, nSides, (size - borderSize), pos, rotate, rotationDelay)));
+float myPolygon(
+  vec2 uv,
+  float nSides,
+  float size,
+  float aspect,
+  vec2 pos,
+  bool rotate,
+  float rotationDelay
+){
+  return
+    (myPolygonShape(uv, nSides, size, pos, rotate, rotationDelay)
+    * (1.0 - myPolygonShape(uv, nSides, (size - borderSize), pos, rotate, rotationDelay)));
 }
 
 void main() {
@@ -41,10 +58,18 @@ void main() {
   float center = aspect / 2.0;
   vec3 col = 0.5 + 0.5 * sin(u_time + uv.xyx + vec3(0.0, 2.0, 4.0));
   float polygon = 0.0;
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 200; i++) {
     float size = float(i) * (gap);
     float rotationDelay = float(i) * delay;
-    polygon += myPolygon(uv, numberOfSides, size, aspect, vec2(center, 0.5), true, rotationDelay);
+    polygon += myPolygon(
+      uv,
+      numberOfSides,
+      size,
+      aspect,
+      vec2(center, 0.5),
+      true,
+      rotationDelay
+    );
   }
   col = col * vec3(polygon);
   gl_FragColor = vec4( col, 1.0 );
