@@ -937,3 +937,47 @@ vec2 myUV = ((uv.xy - vec2(centerX, 0.5)) * myRotate(sin(uTime)*PI)) + vec2(cent
 
 ## 15.0 - Scale
 
+To change the scale, we can reuse `mat2()` and do a similar calculation to rotating.
+
+```glsl
+mat2 myScale(vec2 scale){
+	return mat2(1.0 / scale.x, 0.0, 0.0, 1.0 / scale.y);
+}
+```
+
+Let's start with a group of circles
+
+```glsl
+float circles = 0.0;
+circles += myCircleShape(0.2, vUV.xy, vec2(0.5, 0.5));
+circles += myCircleShape(0.1, vUV.xy, vec2(0.3, 0.2));
+circles += myCircleShape(0.05, vUV.xy, vec2(0.7, 0.8));
+circles += myCircleShape(0.05, vUV.xy, vec2(0.2, 0.6));
+circles += myCircleShape(0.05, vUV.xy, vec2(0.7, 0.3));
+
+// Color
+vec3 color = 0.5 + 0.5 * sin(uTime + vUV.xyx + vec3(0.0, 2.0, 4.0)); 
+color *= vec3(circles);
+```
+
+![Group of circles](_screenshots/image-42.png "Group of circles")
+
+Now lets scale it.
+
+```glsl
+vec2 myUV = vUV.xy * myScale(vec2(0.5, 0.5));
+```
+
+![Group of circles scaled](_screenshots/image-43.png "Group of circles scaled")
+
+And simlar to last time, we need to scale the objects to the center of the canvas as well as center the objects in the canvas.
+
+```glsl
+vec2 myUV = ((vUV.xy - 0.5) * myScale(vec2(0.5, 0.5))) + 0.5;
+```
+
+![Group of circles scaled and centered](_screenshots/image-44.png "Group of circles scaled and centered")
+
+Let's also pass in the `uTime` uniform so we can animate.
+
+<div style="position:relative; padding-bottom:100%; height:0; overflow:hidden;"><iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" src="https://www.shadertoy.com/embed/tf33RB?gui=true&t=10&paused=false&muted=false" allowfullscreen></iframe></div>
