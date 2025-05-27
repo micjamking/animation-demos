@@ -94,7 +94,7 @@ requestAnimationFrame(this.#render.bind(this))
 ```js
 #render(timeMs){
   this.prog.use()                 // tell GL “next calls use this program”
-  this.prog.set1f('u_time', s)    // push changing uniform
+  this.prog.set1f('u_time', timeMs)    // push changing uniform
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4) // ↙ GPU invocations cascade
 }
 ```
@@ -111,7 +111,8 @@ For every screen pixel, the GPU:
 
 1. Computes normalized coordinates `uv`.
 2. Sines them with time.
-3. Emits an RGB color.  
+3. Emits an RGB color.
+
 No loops, no branches in JS—the GPU parallelizes it all.
 
 ---

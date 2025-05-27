@@ -981,3 +981,31 @@ vec2 myUV = ((vUV.xy - 0.5) * myScale(vec2(0.5, 0.5))) + 0.5;
 Let's also pass in the `uTime` uniform so we can animate.
 
 <div style="position:relative; padding-bottom:100%; height:0; overflow:hidden;"><iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" src="https://www.shadertoy.com/embed/tf33RB?gui=true&t=10&paused=false&muted=false" allowfullscreen></iframe></div>
+
+## 16.0 - Animations
+
+Animating in TD is simply a matter of setting up new uniforms similar `uTime` but for other values we want to control and manipulate through operators.
+
+```glsl
+uniform float uRadius;
+uniform float uSize;
+uniform float uTime;
+uniform vec2 uPos;
+
+void main()
+{
+  float myShape = myPolygonShape(
+    uRadius,
+    (vUV.xy - uPos.x) * rotate2D(sin(uTime) * PI) + uPos.x,
+    uPos,
+    5.0
+  );
+  ...
+}
+```
+
+![TouchDesigner Operators](_screenshots/image-47.png "TouchDesigner Operators")
+
+![GLSL Vectors properties](_screenshots/image-46.png "GLSL Vectors properties")
+
+![A polygon off center](_screenshots/image-45.png "A polygon off center")
