@@ -1009,3 +1009,70 @@ void main()
 ![GLSL Vectors properties](_screenshots/image-46.png "GLSL Vectors properties")
 
 ![A polygon off center](_screenshots/image-45.png "A polygon off center")
+
+## 17.0 - Grids and Patterns
+
+Creating grids and patterns involves manipulating the coordinate space as well as using a function to create repetitions.
+
+```glsl
+float myCircle = myCircleShape(
+  0.25,
+  vUV.xy,
+  vec2(0.5, 0.5)
+);
+```
+
+![A circle](_screenshots/image-48.png "A circle")
+
+First we multiply the coordinate space by the grid we want to use, in this case `myUV *= 3.0`. This alone has the effect of scaling the grid by that amount, ie. the coordinate space now spans from `0.0-3.0`, and our circle is placed in the first `1.0 x 1.0` square.
+
+```glsl
+vec2 myUV = vUV.xy;
+myUV *= 3.0;
+float myCircle = myCircleShape(
+  0.25,
+  myUV.xy,
+  vec2(0.5, 0.5)
+);
+```
+
+![A circle in the bottom left grid](_screenshots/image-50.png "A circle in the bottom left grid")
+
+Finally, using the `fract` function, we can repeat whats in the first grid space over the entire grid.
+
+```glsl
+vec2 myUV = vUV.xy;
+myUV *= 3.0;
+myUV = fract(myUV);
+float myCircle = myCircleShape(
+  0.25,
+  myUV.xy,
+  vec2(0.5, 0.5)
+);
+```
+
+![A 3x3 grid of circles](_screenshots/image-49.png "A 3x3 grid of circles")
+
+If we want to offset a grid, we can use the `mod` function to designate a pattern of selection.
+
+```glsl
+mod(myUV.y, 2.0)
+```
+
+This will select every other (even) row vertically. Then, using the `step()` function, we can output a binary `0.0/1.0` for every other row, and use this to offset our horizontal calcuations.
+
+```glsl
+myUV.x += step(1.0, mod(myUV.y, 2.0)) * 0.5;
+```
+
+We multiply the value by how much we want to offset, in this case being `0.5`.
+
+![A 5x5 grid of circles](_screenshots/image-52.png "A 5x5 grid of circles")
+
+As before, we can pass in a `uTime` uniform to a `sin()` function to animate.
+
+```glsl
+myUV.x += step(1.0, mod(myUV.y, 2.0)) * sin(uTime * 0.5);
+```
+
+<div style="position:relative; padding-bottom:100%; height:0; overflow:hidden;"><iframe style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" src="https://www.shadertoy.com/embed/WcVGR3?gui=true&t=10&paused=false&muted=false" allowfullscreen></iframe></div>

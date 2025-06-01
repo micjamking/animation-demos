@@ -10,7 +10,7 @@
     <script type="module">
         import { ShaderApp } from '../../_shared/shader.js';
 
-        const res = await fetch('./scale.glsl');
+        const res = await fetch('./demo.glsl');
         const FRAG_SRC = await res.text();
         
         const VERT_SRC = /* glsl */`
@@ -26,30 +26,5 @@
           fragment: FRAG_SRC
         });
     </script>
-    <!-- <script type="module">
-        // OffscreenCanvas Recorder
-
-        const canvas = document.querySelector('canvas');
-        const offscreen = canvas.transferControlToOffscreen();
-        const worker = new Worker('recorderWorker.js');
-
-        worker.postMessage({ type: 'init', canvas: offscreen }, [offscreen]);
-
-        let isRecording = false;
-
-        // Create the control button
-        const recordButton = document.createElement('button');
-        recordButton.textContent = 'Start Recording';
-        recordButton.style.position = 'absolute';
-        recordButton.style.top = '10px';
-        recordButton.style.right = '10px';
-        document.body.appendChild(recordButton);
-
-        recordButton.addEventListener('click', () => {
-        isRecording = !isRecording;
-        worker.postMessage({ type: isRecording ? 'start' : 'stop' });
-        recordButton.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
-        });
-    </script> -->
 </body>
 </html>
