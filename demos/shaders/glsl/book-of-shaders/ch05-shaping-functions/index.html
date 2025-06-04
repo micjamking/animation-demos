@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book of Shaders - Ch. 05 - Shaping Functions</title>
+    <link rel="stylesheet" href="../../_shared/style.css" />
+    <link rel="icon" href="../../../../favicon.png" type="image/x-icon">
+</head>
+<body>
+    <canvas class="canvas" width="400" height="400">Canvas not supported</canvas>
+    <script type="module">
+        import { ShaderApp } from '../../_shared/shader.js';
+
+        const res = await fetch('./shaping.glsl');
+        const FRAG_SRC = await res.text();
+        
+        const VERT_SRC = /* glsl */`#version 300 es
+            in vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+        
+        new ShaderApp(document.querySelector('canvas'), {
+          vertex: VERT_SRC,
+          fragment: FRAG_SRC
+        });
+    </script>
+</body>
+</html>

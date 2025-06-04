@@ -64,7 +64,7 @@ export class ShaderApp {
    */
   constructor(canvas, src) {
     console.log('Running WebGL canvas shader...');
-    this.gl = canvas.getContext('webgl');
+    this.gl = canvas.getContext('webgl2');
     if (!this.gl) throw new Error('WebGL not supported');
 
     this.canvasWidth = 0;

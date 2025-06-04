@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello Shaders - GLSL - Animations</title>
+    <title>Book of Shaders - Ch. 06 - Colors</title>
     <link rel="stylesheet" href="../../_shared/style.css" />
     <link rel="icon" href="../../../../favicon.png" type="image/x-icon">
 </head>
@@ -10,11 +10,11 @@
     <script type="module">
         import { ShaderApp } from '../../_shared/shader.js';
 
-        const res = await fetch('./demo.glsl');
+        const res = await fetch('./colors.glsl');
         const FRAG_SRC = await res.text();
         
         const VERT_SRC = /* glsl */`
-            attribute vec2 position;
+            in vec2 position;
 
             void main() {
                 gl_Position = vec4(position, 0.0, 1.0);

@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 uniform vec2 u_mouse;
@@ -10,10 +11,6 @@ float borderSize = 0.001;
 float numberOfSides = 5.0;
 float delay = 0.05;
 float gap = 0.0125;
-
-float round(float n){
-  return floor(0.5 + n);
-}
 
 mat2 myRotation(float theta){
   return mat2(cos(theta), -sin(theta), sin(theta), cos(theta));
@@ -51,6 +48,7 @@ float myPolygon(
     * (1.0 - myPolygonShape(uv, nSides, (size - borderSize), pos, rotate, rotationDelay)));
 }
 
+out vec4 fragColor;
 void main() {
   vec2 uv = gl_FragCoord.xy / u_resolution;
   float aspect = u_resolution.x / u_resolution.y;
@@ -72,5 +70,5 @@ void main() {
     );
   }
   col = col * vec3(polygon);
-  gl_FragColor = vec4( col, 1.0 );
+  fragColor = vec4( col, 1.0 );
 }

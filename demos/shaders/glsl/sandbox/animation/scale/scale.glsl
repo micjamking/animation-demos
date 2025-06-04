@@ -1,3 +1,4 @@
+#version 300 es
 #define PI 3.1415926535
 
 precision mediump float;
@@ -17,6 +18,7 @@ float limitedSin(float minVal, float maxVal, float x){
  return minVal + (maxVal - minVal) * (sin(x) + 1.0) / 2.0;
 }
 
+out vec4 fragColor;
 void main(){
  vec2 uv = gl_FragCoord.xy / u_resolution;
  float aspect = u_resolution.x / u_resolution.y;
@@ -80,5 +82,5 @@ void main(){
  );
  vec3 gradient = 0.5 + 0.5 * sin((u_time) * 2.0 + myUV.xyx + vec3(0.0, 2.0, 4.0));
  color += circle * gradient;
- gl_FragColor = vec4(color, 1.0);
+ fragColor = vec4(color, 1.0);
 }

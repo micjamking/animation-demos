@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 uniform vec2 u_resolution;
@@ -24,6 +25,7 @@ float myPolygon(float nSides, vec2 uv, float size, vec2 pos, float borderSize, b
     return myPolygonShape(nSides, uv, size, pos, rotate, rotationDelay) * (1.0 - myPolygonShape(nSides, uv, size - borderSize, pos, rotate, rotationDelay));
 }
 
+out vec4 fragColor;
 void main(){
     vec2 uv = gl_FragCoord.xy / u_resolution;
     float aspect = u_resolution.x / u_resolution.y;
@@ -41,5 +43,5 @@ void main(){
     }
     
     color *= vec3(polygon);
-    gl_FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
 }
