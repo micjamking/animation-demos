@@ -1,0 +1,298 @@
+	
+body {
+	padding: 0px;
+	margin: 0px;
+	font-family: "Arial";
+	background: #999999;
+	font-size: 1em;
+	text-align: center;
+}
+
+/*---------------- base structure ----------------------- */
+
+#container{
+	width: 100%;
+	margin: auto;
+	padding: 0px;
+	text-align:left;
+}
+
+#header{
+	background: #000000;
+	height: 60px;
+	margin: 0px;
+	/* width: 100vw; */
+}
+
+#main{
+	background: #ffffff;
+	padding: 0px 20px 60px 20px;
+	margin: 0px;
+}
+
+#footer{
+	background: #000000;
+	height: 20px;
+	margin: 0px;
+	padding: 4px 0px 0px 20px;
+	color: #CCCCCC;
+	font-size: 10px;
+}
+
+#nav{
+	float:		left;
+	width: calc(370 / 1000 * 1px);
+	height: 	0px;
+}
+
+#pagetitle{
+	width: 100%;
+	padding-top: 70px;
+	padding-bottom: 30px;
+}
+
+/*---------------- page layouts ----------------------- */
+
+#fingertoy{
+	float: right;
+	margin-right: 20px;
+	margin-top: 12px;
+}
+
+#printheader{
+	display: none;
+}
+
+
+#logo{
+	padding-top: 	20px;
+	padding-left: 	20px;
+	height: 	40px;
+	width: calc(480 / 1000 * 1px);
+	float: 		left;
+}
+
+#logo img{
+	border: 0px;
+}
+
+#leftsplit-left{
+	width: 260px;
+	float: left;
+	padding: 0px 0px 0px 0px;
+	font-size: 11px;
+	display: none;
+}
+
+#leftsplit-right{
+	/* float: right; */
+	/* padding: 0px 0px 0px 30px; */
+	/* width: 665px; */
+	line-height: 1.5;
+}
+#leftsplit-wrap{
+	padding: 0px;
+	margin: 0px;
+	/* float:left; */
+	/* background-image: url(../../images/leftsplit-backline.gif); */
+	/* background-repeat: repeat-y; */
+	/* width: 960px; */
+}
+
+#equalsplit-left{
+	width: 465px;
+	float: left;
+	padding: 0px 10px 0px 0px;
+}
+#equalsplit-right{
+	float: right;
+	padding: 0px 0px 0px 15px;
+	width: 465px;
+	line-height: 18px;
+}
+#equalsplit-wrap{
+	padding: 0px;
+	margin: 0px;
+	float:left;
+	background-image: url(../../images/equalsplit-backline.gif);
+	background-repeat: repeat-y;
+	width: 960px;
+}
+
+hr {
+	height: 1px;
+	background: #000000;
+	color: #000000;
+	border: 0;
+}
+
+/*---------------- links ----------------------- */
+
+
+#nav a{
+	font-size: 14px;
+	font-weight: strong;
+	color: #fff;
+	text-decoration: none;
+	padding: 22px 2px;
+	margin: 0px;
+	line-height: 60px;
+	white-space: nowrap;
+}
+
+#nav a:hover{
+	background-image: url(../../images/navtop.gif);
+	background-color: #232323;
+	background-repeat: repeat-x;
+	background-attachment: scroll;
+	background-x-position: left;
+
+}
+
+#nav a#active {
+	background-image: url(../../images/navtop.gif);
+	background-repeat: repeat-x;
+	background-attachment: scroll;
+	background-x-position: left;
+	background-y-position: top;
+}
+
+#nav ul {
+	margin: 0px;
+	padding: 0px;
+	line-height: 60px;
+	white-space: nowrap;
+}
+
+#nav li {
+	list-style-type: none;
+	display: inline;
+}
+
+a.nohover:hover {
+	background: none;
+	border: none;
+}
+a.nohover {
+	background: none;
+	border: none;
+}
+
+
+a{
+  color: #000000;
+}
+a:hover{
+	text-decoration: none;
+
+	color: #FFFFFF;
+
+	background-color: #000000;
+}
+
+/*---------------- text ----------------------- */
+
+
+h1{
+	font-size: 18px;
+	font-weight: strong;
+	margin: 0px;
+	padding: 0px;
+
+}
+
+h2{
+	color: #666666;
+	font-size: 18px;
+	font-weight: normal;
+	margin: 0px;
+	padding: 0px;
+	
+}
+
+h3{
+	color: #000000;
+	font-size: 14px;
+	font-weight: strong;
+	margin: 0px;
+	padding: 0px 0px 5px 0px;
+	clear: left;
+	
+}
+
+#flingflong{
+	color: #383838;
+	font-style: italic;
+}
+
+/*---------------- lists ----------------------- */
+
+
+ul.leftnav {
+	margin: 0px;
+	padding: 0px;
+}
+
+ul.leftnav li {
+	list-style: none;
+	padding: 0px 0px 5px 0px;
+	
+}
+
+
+/*---------------- thumbnails and video -------- */
+
+#video-wrapper{
+	width: 665px;
+	float: left;
+	padding: 5px 0px 5px 0px;
+}
+#video-left{
+	width: 90px;
+	float: left;
+	padding: 0px 10px 0px 0px;
+}
+#video-right{
+	float: left;
+}
+
+div.homethumb {
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 10px;
+  color: #666666;
+  font-size: 11px;
+}
+
+div.homethumb img{
+	margin-bottom: 3px;
+}
+
+
+
+div.smallthumb {
+  float: left;
+  margin-right: 14px;
+  margin-bottom: 10px;
+  width: 90px;
+  font-size: 11px;
+  color: #AAAAAA;
+}
+
+div.smallthumb img{
+	margin-bottom: 3px;
+}
+
+div.smallthumb_row{
+	float: left;
+
+}
+
+div.projectgroup{
+	float: left;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+
+

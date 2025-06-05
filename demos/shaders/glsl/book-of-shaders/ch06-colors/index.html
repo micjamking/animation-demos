@@ -10,7 +10,7 @@
     <script type="module">
         import { ShaderApp } from '../../_shared/shader.js';
 
-        const res = await fetch('./colors.glsl');
+        const res = await fetch('./colors.1.glsl');
         const FRAG_SRC = await res.text();
         
         const VERT_SRC = /* glsl */`
