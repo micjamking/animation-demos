@@ -35,7 +35,7 @@ void main() {
 
   // Grid resolution (scaled)
   vec2 uv = st * 2.0;
-  uv -= vec2(1.0, 0.0);
+  uv -= mix(vec2(0.0, 1.0 / aspect), vec2(aspect, 0.0), step(1.0, aspect));
 
   // Table of equations - https://thebookofshaders.com/05/kynd.png
   // float y = 1.0 - pow(abs(uv.x), 0.5);
@@ -79,7 +79,7 @@ void main() {
   // float y = 1.0 - pow(max(0.0, abs(uv.x) * 2.0 - 1.0), 3.5);
 
   float pct = plot(uv, y);
-  float grid = gridlines(st, 20.0, 0.1);
+  float grid = gridlines(st, 20.0, 0.15);
   
   color = (1.0 - pct) * color + pct * vec3( 0.0, 1.0, 0.0 );
   color += grid;

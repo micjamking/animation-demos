@@ -40,7 +40,7 @@ void main() {
   // float y = position + mod((u_time + (st.x * PI) * wavelength), 0.5) * amplitude;
   // float y = position + fract((u_time + (st.x * PI) * wavelength)) * amplitude;
   
-  float grid = gridlines(st, 20.0, 0.1);
+  float grid = gridlines(st, 20.0, 0.15);
   
   vec3 color = vec3(0.0);
   vec3 color2 = vec3(0.0);

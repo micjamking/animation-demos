@@ -10,10 +10,10 @@
     <script type="module">
         import { ShaderApp } from '../../_shared/shader.js';
 
-        const res = await fetch('./colors.1.glsl');
+        const res = await fetch('./colors.easing.glsl');
         const FRAG_SRC = await res.text();
         
-        const VERT_SRC = /* glsl */`
+        const VERT_SRC = /* glsl */`#version 300 es
             in vec2 position;
 
             void main() {
